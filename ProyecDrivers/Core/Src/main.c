@@ -116,7 +116,7 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-  // We define the size of our buffer to 5 due to the sequence
+  //define the size of our buffer to 5 due to the sequence
   ring_buffer_init(&ring_buffer_uart_rx, rx_buffer, 5);
   keypad_init();  // Initialize the keypad functionality
   HAL_UART_Receive_IT(&huart2, &rx_data, 1);
@@ -139,11 +139,11 @@ int main(void)
 	  		  uint8_t key_pressed = keypad_handler(key_event); // call the keypad handler
 	  		  if (key_pressed != 0xFF) { //check if it is not 0xFF this likely represents either no key press or an invalid key press
 	  			  printf("Key pressed: %x\r\n", key_pressed); // print the key pressed
-	  			  if (key_pressed == 0x0E){ // check if the press key is equal to * then reset the ring buffer
+	  			  if (key_pressed == 0x0E){ //  reset the ring buffer
 	  				  ring_buffer_reset(&ring_buffer_uart_rx);
 	  			  }
 	  			  else{
-					  ring_buffer_put(&ring_buffer_uart_rx, key_pressed); // Store the key pressed in the ring buffer
+					  ring_buffer_put(&ring_buffer_uart_rx, key_pressed); // Store the key pressed
 					  uint16_t size = ring_buffer_size(&ring_buffer_uart_rx);
 					  if (size == 5){ // Check if the size of the buffer is equal to 5 so we can look at the sequence
 						  uint8_t rx_data[size+1]; // rx_data is created here as a buffer to store a sequence of received data
@@ -152,8 +152,8 @@ int main(void)
 						  			ring_buffer_get(&ring_buffer_uart_rx, &rx_data[idx]); // get the value from the ring buffer
 						  		    printf("%02x", rx_data[idx]); // Print each byte in hexadecimal format
 						  }
-						  uint8_t birth_date[] = {0x00,0x03,0x08,0x04,0x0F}; // Birth date 2003/08/04 and the # symbol
-						  if (memcmp(rx_data, birth_date, size) == 0){ // Check if keys pressed are equal to the birth date and the we print in the screen if the value is correct or not
+						  uint8_t birth_date[] = {0x02, 0x09, 0x09, 0x01, 0x0F}; // Birth date 29/09/2001 and the # symbol
+						  if (memcmp(rx_data, birth_date, size) == 0){ // Check if keys pressed is correct
 							ssd1306_SetCursor(20, 20);
 							ssd1306_Fill(White);
 							ssd1306_WriteString("Pass!",  Font_16x26, Black);
